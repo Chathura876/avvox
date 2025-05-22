@@ -335,8 +335,13 @@ function paymentSave() {
         success: function (response) {
             console.log(response);
             if (response.success && response.invoice_id) {
-                const win = window.open(`../view/component/invoice_print.php?id=${response.invoice_id}`, '_blank');
-                win.onload = () => win.print();
+                const win = window.open(
+                    `../view/component/invoice_print.php?id=${response.invoice_id}`,
+                    'PrintWindow',
+                    'width=800,height=600,top=100,left=100,toolbar=no,scrollbars=no,resizable=no'
+                );
+
+                // Optional: Reload the main page right away
                 location.reload();
             } else {
                 alert('Invoice save failed.');
@@ -347,8 +352,4 @@ function paymentSave() {
             alert('Something went wrong while saving payment.');
         }
     });
-
-
-
-
 }

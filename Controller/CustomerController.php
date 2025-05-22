@@ -11,11 +11,11 @@ if ($_POST['command'] == 'save') {
         $customer->nic = $_POST['nic'];
         $customer->phone = $_POST['phone'];
         $customer->address = $_POST['address'];
-        $customer->modelid = $_POST['model'];
+        $customer->modelid = 'a';
 //    $customer->district=$_POST['district'];
-        $customer->purdate = $_POST['purchase_date'];
-        $customer->vat = $_POST['vat_option'];
-        $customer->vat_no = $_POST['vat_no'];
+        $customer->purdate =  date('Y-m-d');
+        $customer->vat = 0;
+        $customer->vat_no = 0;
         $customer->save();
         return 'success';
     } catch (Exception $e) {

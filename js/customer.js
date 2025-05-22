@@ -4,12 +4,7 @@ function save() {
     let phone = document.getElementById("phone").value.trim();
     let address = document.getElementById("address").value.trim();
     let district = document.getElementById("district").value.trim();
-    let purchase_date = document.getElementById("purchase_date").value.trim();
-    let model = document.getElementById("model").value.trim();
-    let vat_option = document.getElementsByName("vat_option").value;
-    let vat_no = document.getElementById("vat_no").value.trim();
-        alert(vat_option);
-        alert(vat_no);
+
     if (name === "") {
         Swal.fire("Error", "Name is required.", "error");
         return;
@@ -35,10 +30,6 @@ function save() {
             nic: nic,
             address: address,
             district: district,
-            purchase_date: purchase_date,
-            model: model,
-            vat_option: vat_option,
-            vat_no: vat_no
         },
         success: function (data) {
             Swal.fire("Success", "Customer saved successfully.", "success");

@@ -116,10 +116,9 @@ if (isset($_GET['id'])) {
 
 </head>
 
-<body>
-<div class="container-fluid py-4">
+<body onload="window.print(); window.close();">
 
-    <!-- Header -->
+<div class="container-fluid py-4">
     <div class="invoice-header-bg text-center mb-4">
         <div class="row">
             <div class="col-3">

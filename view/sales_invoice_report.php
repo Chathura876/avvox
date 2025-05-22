@@ -50,26 +50,28 @@ if (!(in_array($_SESSION['usertype'], $permissions))) {
         <table id="invoiceTable" class="table">
             <thead>
             <tr>
+                <th class="d-none">ID</th>
                 <th scope="col">Invoice No</th>
                 <th scope="col">Customer</th>
                 <th scope="col">Date</th>
                 <th scope="col">Net Total</th>
-                <th scope="col">Net Total</th>
+                <th scope="col"></th>
             </tr>
             </thead>
             <tbody>
             <?php
-             $sql="SELECT * FROM sales_invoice";
+             $sql="SELECT * FROM sales_invoice ORDER BY id DESC";
                 $result = $mysqli->query($sql);
             if ($result && $result->num_rows > 0) {
                 while ($row = $result->fetch_assoc()) {
                     echo "<tr>
+            <td class='d-none'>{$row['id']}</td>
             <td>{$row['invoice_no']}</td>
             <td>{$row['customer_name']}</td>
             <td>{$row['invoice_date']}</td>
             <td>{$row['net_total']}</td>
             <td>
-                <a href='component/invoice_print.php?id={$row['id']}' class='btn btn-primary btn-sm'>View</a>
+                <a href='component/invoice_print.php?id={$row['id']}' target='_blank' class='btn btn-primary btn-sm'>View</a>
             </td>
         </tr>";
                 }
@@ -85,11 +87,12 @@ if (!(in_array($_SESSION['usertype'], $permissions))) {
 </div>
 </div>
 <script>
-    $(document).ready(function () {
+    $(document).ready(function() {
         $('#invoiceTable').DataTable({
-            searching: true,
-            paging: true,
-            info: true
+            "order": [[0, "desc"]], // Sort by the first column (Invoice No) in descending order
+            "searching": true,
+            "paging": true,
+            "info": true
         });
     });
 </script>

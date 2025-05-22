@@ -63,43 +63,6 @@
                                     </select>
 
                                 </div>
-
-                                <div class="col-4">
-                                    <label for="">Purchased Date</label>
-                                    <input type="date" class="form-control" name="purchase_date" id="purchase_date">
-                                </div>
-                                <div class="col-4">
-                                    <label for="">Model</label>
-                                    <select name="model" id="model" class="form-control">
-                                        <option value="">Select Model</option>
-                                        <?php
-                                        $sql = "SELECT * FROM product WHERE status='Active' ORDER BY model ASC";
-                                        $result = mysqli_query($mysqli, $sql);
-                                        while ($row = $result->fetch_object()) {
-                                            echo "<option value='" . $row->id . "'>" . $row->model . "</option>";
-                                        }
-                                        ?>
-                                    </select>
-                                </div>
-                                <div class="col-4 mt-3">
-                                    <label>VAT Type</label><br>
-                                    <div class="form-check form-check-inline">
-                                        <input class="form-check-input" type="radio" name="vat_option" id="vat_yes" value="yes">
-                                        <label class="form-check-label" for="vat_yes">VAT</label>
-                                    </div>
-                                    <div class="form-check form-check-inline">
-                                        <input class="form-check-input" type="radio" name="vat_option" id="vat_no" value="no" >
-                                        <label class="form-check-label" for="vat_no">Non-VAT</label>
-                                    </div>
-
-                                    <!-- VAT number field placed directly under the radio buttons -->
-                                    <div id="vat_number_section" style="display: none;" class="mt-2">
-                                        <label for="vat_number">VAT Number</label>
-                                        <input type="text" class="form-control" name="vat_no" id="vat_no" placeholder="Enter VAT number">
-                                    </div>
-                                </div>
-
-
                             </div>
                             <div class="col-12">
                                 <div class="row mt-2">

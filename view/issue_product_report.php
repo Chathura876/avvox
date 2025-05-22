@@ -50,6 +50,7 @@ if (!(in_array($_SESSION['usertype'], $permissions))) {
         <table id="invoiceTable" class="table">
             <thead>
             <tr>
+                <th class="d-none" scope="col">ID</th>
                 <th scope="col">Invoice No</th>
                 <th scope="col">Product Name</th>
                 <th scope="col">Indoor Barcode</th>
@@ -59,11 +60,12 @@ if (!(in_array($_SESSION['usertype'], $permissions))) {
             </thead>
             <tbody>
             <?php
-             $sql="SELECT * FROM issue_product_barcode";
+             $sql="SELECT * FROM issue_product_barcode ORDER BY id DESC ";
                 $result = $mysqli->query($sql);
             if ($result && $result->num_rows > 0) {
                 while ($row = $result->fetch_assoc()) {
                     echo "<tr>
+                <td class='d-none'>{$row['id']}</td>
                 <td>{$row['invoice_no']}</td>
                 <td>{$row['product_name']}</td>
                 <td>{$row['indoor_barcode']}</td>
@@ -82,11 +84,12 @@ if (!(in_array($_SESSION['usertype'], $permissions))) {
 </div>
 </div>
 <script>
-    $(document).ready(function () {
+    $(document).ready(function() {
         $('#invoiceTable').DataTable({
-            searching: true,
-            paging: true,
-            info: true
+            "order": [[0, "desc"]], // Sort by the first column (Invoice No) in descending order
+            "searching": true,
+            "paging": true,
+            "info": true
         });
     });
 </script>
