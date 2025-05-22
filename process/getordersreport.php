@@ -1,0 +1,188 @@
+<?php
+require_once("../common/logincheck.php");
+require_once("../common/database.php");
+if (!($userloggedin)) {//Prevent the user visiting this page if not logged in 
+  //Redirect to user account page
+  //header("Location: login.php");
+  http_response_code(403);
+  die();
+}
+
+//exit("Byeeeeee");
+try
+{	
+	if(isset($_POST['dealerid']) && isset($_GET['status'])){
+
+		$datastring = "<h2>Order Details Report - Avvox CRM</h2>";
+
+		$fromtimestamp = strtotime($_POST['from']) - 1;
+		$totimestamp = strtotime($_POST['to']) + 86400;
+		
+		$query = "SELECT * FROM orders 
+		INNER JOIN user 
+		WHERE orders.dealerid = user.id 
+		AND ordertime BETWEEN $fromtimestamp AND $totimestamp
+		";
+		
+		$query3 = "SELECT fullname FROM user 
+		INNER JOIN orders 
+		WHERE orders.addedby = user.id
+		";
+		
+		$result3 = $mysqli->query($query3);
+	
+
+		if($_GET['status'] != 4){//not all orders
+			$query .= " AND issued={$_GET['status']}";
+		
+		}
+		
+		if($_POST['dealerid'] != 0){//not all
+			$query .= " AND dealerid={$_POST['dealerid']}";
+		
+		}		
+
+
+		//echo $query;
+
+	
+	
+
+		
+
+		if ($result = $mysqli->query($query)) {
+
+			if($result->num_rows>0){
+
+				$datastring .= "
+				<table style='width:100%'>
+					<tr>
+						<td>
+							<b>Dealer:</b> {$_POST['dealername']}
+						</td>
+						<td>
+							<b>Time Period:</b> {$_POST['from']} - {$_POST['to']}
+						</td>
+
+						<td>
+							<b>Report Date:</b> ".date('Y-m-d h:i:s A')."
+						</td>
+						<td>
+							<b>Order Status: </b>{$_GET['status']}
+						</td>
+					</tr>
+				</table><br>
+
+				";
+
+		// 		$datastring2 = "
+		// 		 <a class='d-print-none float-right btn-lg btn px-3 btn-light' href='#' onclick='window.print()' role='button'>Print <img src='images/print-icon.png' height='31' alt='Print'></a>
+  // <a class='d-print-none float-right btn-lg btn px-3 btn-light' href='process/generatepdf.php?dealerid={$_POST['dealerid']}&status={$_GET['status']}&dealername={$_POST['dealername']}&from={$_POST['from']}&to={$_POST['to']}' role='button'>PDF <img src='images/pdf-icon.png' height='31' alt='Download as PDF'></a>
+
+		// 		";
+
+
+				$datastring .= "	<table class='table table-responsive' id='udaratable' style='width:100%'>
+				  <tr>
+				    <th>Order ID</th>
+				    <th align='right'>Dealer</th>
+				    <th align='right'>Shop Name</th>
+				    <th align='right'>Area</th>
+				    <th align='right'>Order Date</th>
+				    <th align='right'>Summary</th>
+				  </tr>";
+		
+
+
+
+	  		$i = 1;
+
+			while ($item = $result->fetch_object()) {
+			     //echo $item->model."=".$item->amount;
+			     //echo "<br>";
+				$descstring = "";
+				$query2 = "SELECT * FROM orderitems 
+				INNER JOIN product 
+				WHERE orderid='{$item->orderid}'
+				AND orderitems.modelid = product.id";
+				if ($result2 = $mysqli->query($query2)) {
+					$descstring .= "<table style='width:100%'>
+				  <tr>
+				    <th style='width:20%' align='right'>Model</th>
+				    <th style='width:20%' align='right'>Quantity</th>
+				    <th style='width:20%' align='right'>Free</th>
+				    <th style='width:20%' align='right'>Value</th>
+				    <th style='width:20%' align='right'>Total</th>
+				  </tr>";					
+
+                    $sum=0;
+					while ($log = $result2->fetch_object()) {
+					     //echo $objectname->Name;
+					     //echo "<br>";
+					   
+					    
+						$reqamount = $log->amount + $log->amountissued;
+						$total = $log->amountissued * $log->unitprice;
+						$priceamount = number_format($log->unitprice,2);
+						$tol = number_format($total,2);
+						$descstring .= "
+						  <tr>
+							<td align='right'>{$log->model}</td>";
+							if($_GET['status'] == 0 || $_GET['status'] == 1){
+								$descstring .= "<td align='right'>{$log->amount}</td>";
+								$total = $log->amount * $log->unitprice;
+								$tol = number_format($total,2);
+							}else{
+								$descstring .= "<td align='right'>{$log->amountissued}</td>";
+								$total = $log->amountissued * $log->unitprice;
+								$tol = number_format($total,2);
+							}
+						
+						    $descstring .= "<td align='right'>{$log->amountfree}</td><td align='right'>{$priceamount}</td>
+						    <td align='right'>{$tol}</td>
+
+						  </tr>
+
+						";
+						$sum = $sum + $total;
+						$totalsum = number_format($sum,2);
+						
+					}
+					$descstring .= "<tr><th>Grand Total</th><td></td><td></td><td></td> <td align='right'>{$totalsum}</td></tr>";
+					$descstring .= "</table>";
+				}
+				
+                $addedby = $result3->fetch_object();
+
+				$thisorderdate = date("Y-m-d g:i a", $item->ordertime);
+				$datastring .= "<tr>
+				<td>{$item->orderid}</td>
+				<td>{$item->fullname}</td>
+				<td>{$item->shopname}</td>
+				<td>{$item->area}</td>
+				<td>$thisorderdate</td>
+				<td>$descstring</td>				
+				</tr>";
+
+				$i++;
+			}
+
+			$datastring .= "</table>";
+
+			echo $datastring;
+
+			}
+			else{
+				echo "<div class='alert alert-info col-md-6'>There aren't any results for your selection criteria.<div>";
+			}
+		}
+		
+	}
+}
+catch(Exception $ex)
+{
+	echo $ex->getMessage();
+
+}
+	
+?>
