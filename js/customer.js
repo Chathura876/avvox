@@ -11,7 +11,7 @@ function save() {
     }
 
     if (name.length > 50) {
-        Swal.fire("Error", "Name is characters long.", "error");
+        Swal.fire("Error", "Name must not exceed 50 characters.", "error");
         return;
     }
 
@@ -20,11 +20,12 @@ function save() {
         return;
     }
 
+
     $.ajax({
         url: '../Controller/CustomerController.php',
         method: 'POST',
         data: {
-            command:'save',
+            command: 'save',
             name: name,
             phone: phone,
             nic: nic,
@@ -32,16 +33,22 @@ function save() {
             district: district,
         },
         success: function (data) {
-            Swal.fire("Success", "Customer saved successfully.", "success");
-            resetForm();
-            $('customerCreateModal').modal('hide');
-            location.reload();
+            Swal.fire("Success", "Customer saved successfully.", "success").then(() => {
+                resetForm();
+            });
+            document.getElementById('customerName').value = name;
+            document.getElementById('customerNameLabel').innerHTML=name.trim();
+            document.getElementById('customerPhoneLabel').innerHTML=phone.trim();
+            $('#customerCreateModal').css('display', 'none');
+            $('body').removeClass('modal-open');
+            $('.modal-backdrop').remove();
         },
-        error: function (data) {
-            Swal.fire("Error", data.responseText, "error");
+        error: function (xhr) {
+            Swal.fire("Error", xhr.responseText || "An error occurred", "error");
         }
     });
 }
+
 
 function resetForm() {
     document.getElementById("name").value = "";

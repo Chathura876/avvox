@@ -91,11 +91,34 @@ if (in_array($_SESSION['usertype'], $permissions)) { ?>
 
     <div class="container-fluid mt-2">
         <div class="row">
-            <div class="col-6">
+            <div class="col-2">
                 <h4>Sales Invoice</h4>
             </div>
-            <div class="col-6">
+            <div class="col-3">
                 <h5>Invoice No : <span id="invoice_no"></span></h5>
+            </div>
+            <div class="col-3">
+                <select name="shop" id="shop" class="form-control">
+                    <option value="">Select Shop</option>
+                    <?php
+                    $sql = "SELECT * FROM user WHERE shopname !='' AND shopname != 'jjj'";
+                    $result = $mysqli->query($sql);
+                    while ($row = $result->fetch_assoc()) {
+                        echo '<option value="' . htmlspecialchars($row['id']) . '">' . htmlspecialchars($row['shopname']) . '</option>';
+                    }
+                    ?>
+                </select>
+            </div>
+            <div class="col-4">
+                <div class="row">
+                    <div class="col-12">
+                        <h5>Customer Name : <span id="customerNameLabel" style="font-size: 20px"></span></h5>
+                    </div>
+                    <div class="col-12">
+                        <h5>Customer Phone : <span id="customerPhoneLabel"></span></h5>
+                    </div>
+
+                </div>
             </div>
         </div>
         <hr>
@@ -161,7 +184,7 @@ if (in_array($_SESSION['usertype'], $permissions)) { ?>
                             </tr>
                             <tr>
                                 <td>
-                                    <input type="date" id="date1"  class="form-control">
+                                    <input type="date" id="date1" class="form-control">
                                 </td>
                                 <td>
                                     <input type="date" id="date2" class="form-control">
@@ -196,19 +219,6 @@ if (in_array($_SESSION['usertype'], $permissions)) { ?>
                         <input type="text" id="total" class="form-control" readonly>
                     </div>
                     <div class="col-12">
-                        <label for="shop">Shop</label>
-                        <select name="shop" id="shop" class="form-control">
-                            <?php
-                            $sql = "SELECT * FROM user WHERE shopname !='' AND shopname != 'jjj'";
-                            $result = $mysqli->query($sql);
-                            while ($row = $result->fetch_assoc()) {
-                                echo '<option value="' . htmlspecialchars($row['id']) . '">' . htmlspecialchars($row['shopname']) . '</option>';
-                            }
-                            ?>
-                        </select>
-
-                    </div>
-                    <div class="col-12">
                         <label for="">Total Discount</label>
                         <input type="number" value="0" id="total_discount" class="form-control" disabled>
                     </div>
@@ -218,7 +228,7 @@ if (in_array($_SESSION['usertype'], $permissions)) { ?>
                     </div>
                     <div class="col-12">
                         <div class="form-check">
-                            <input type="checkbox"  id="warranty" name="warranty" onchange="setWarranty(this)">
+                            <input type="checkbox" id="warranty" name="warranty" onchange="setWarranty(this)">
                             <label class="form-check-label" for="warranty">Warranty</label>
                         </div>
                     </div>
@@ -306,6 +316,9 @@ if (in_array($_SESSION['usertype'], $permissions)) { ?>
         $(document).ready(function () {
             $('#customerTable').on('click', '.customer-row', function () {
                 const name = $(this).data('name');
+                const phone = $(this).data('phone');
+                document.getElementById('customerNameLabel').innerHTML=name.trim();
+                document.getElementById('customerPhoneLabel').innerHTML=phone.trim();
                 $('#customerName').val(name);
                 $('#customerSearchModal').css('display', 'none');
                 $('body').removeClass('modal-open');

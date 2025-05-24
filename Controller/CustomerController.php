@@ -11,7 +11,7 @@ if ($_POST['command'] == 'save') {
         $customer->nic = $_POST['nic'];
         $customer->phone = $_POST['phone'];
         $customer->address = $_POST['address'];
-        $customer->modelid = 'a';
+//        $customer->modelid = 'a';
 //    $customer->district=$_POST['district'];
         $customer->purdate =  date('Y-m-d');
         $customer->vat = 0;

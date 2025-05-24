@@ -8,6 +8,8 @@ let payments;
 // ===================== Product Search ================
 $('#search').keyup(function (e) {
     let query = $(this).val();
+    let shop = $('#shop').val();
+
 
     // Skip key navigation keys
     if ([38, 40, 13].includes(e.keyCode)) return;
@@ -18,18 +20,18 @@ $('#search').keyup(function (e) {
             method: 'POST',
             data: {
                 command: 'search',
-                query: query
+                query: query,
+                shop: shop
             },
             success: function (data) {
                 let output = '';
                 if (data.length > 0) {
                     data.forEach(function (item, index) {
-                        // Assume each item is an object with 'name' and 'id'
                         output += `<div class="suggestion-item" data-id="${item.id}" data-index="${index}">${item.model}</div>`;
                     });
                     selectedIndex = -1;
                 } else {
-                    output = '<div class="suggestion-item">No results found</div>';
+                    output = '<div class="suggestion-item">No results found or not have stock this shop </div>';
                 }
                 $('#suggestion-box').html(output).fadeIn();
             }

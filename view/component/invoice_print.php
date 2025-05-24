@@ -8,7 +8,7 @@ if (isset($_GET['id'])) {
     $row = mysqli_fetch_assoc($result);
     $invoice_number = $row['invoice_no'];
 
-    $sql="SELECT * FROM customer WHERE fullname='".$row['customer_name']."'";
+    $sql = "SELECT * FROM customer WHERE fullname='" . $row['customer_name'] . "'";
     $result = $mysqli->query($sql);
     $row2 = mysqli_fetch_assoc($result);
 }
@@ -116,7 +116,7 @@ if (isset($_GET['id'])) {
 
 </head>
 
-<body onload="window.print(); window.close();">
+<body onload="window.print();">
 
 <div class="container-fluid py-4">
     <div class="invoice-header-bg text-center mb-4">
@@ -132,7 +132,8 @@ if (isset($_GET['id'])) {
                     <i class="bi bi-envelope-fill"></i> eseven2@yahoo.com
                 </p>
                 <p class="mb-0">
-                    <i class="bi bi-geo-alt-fill"></i> GS Motors Pannipitiya - No. 115/6, Horahena Road, Rukmale, Pannipitiya |<br>
+                    <i class="bi bi-geo-alt-fill"></i> GS Motors Pannipitiya - No. 115/6, Horahena Road, Rukmale,
+                    Pannipitiya |<br>
                     <i class="bi bi-globe2"></i> www.gsmotorsshop.com
                 </p>
             </div>
@@ -160,7 +161,7 @@ if (isset($_GET['id'])) {
     <div class="table-responsive">
         <table class="table table-bordered">
             <thead style="background-color: #0a568c !important;">
-            <tr >
+            <tr>
                 <th>#</th>
                 <th>Item</th>
                 <th>Price</th>
@@ -264,9 +265,5 @@ if (isset($_GET['id'])) {
     </div>
 
 </div>
-
-<!-- Print Automatically (Uncomment to enable) -->
-<!-- <script>window.print();</script> -->
-
 </body>
 </html>
