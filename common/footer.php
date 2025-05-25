@@ -3,7 +3,7 @@
   <footer class="pt-4 my-md-0 pt-md-5 border-top d-print-none border-top shadow" style="background-color: grey; min-height:30vh;">
     <div class="row">
       <div class="col-12 col-md text-center ">
-        <small class="d-block mb-3 text-light">&copy; 2018-<?php echo date("Y") ?> Avvox Inc. All Rights Reserved.</small>
+        <small class="d-block mb-3 text-light">&copy; 2018-<?php echo date("Y") ?> Coolco (Pvt) Ltd. All Rights Reserved.</small>
       </div>
 <!--       <div class="col-6 col-md">
         <h5>Features</h5>

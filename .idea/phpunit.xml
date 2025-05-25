@@ -5,8 +5,8 @@
       <list>
         <option value="$PROJECT_DIR$/dompdf/tests" />
         <option value="$PROJECT_DIR$/dompdf/lib/php-svg-lib/tests/Svg" />
-        <option value="$PROJECT_DIR$/dompdf/lib/php-css-parser/tests" />
         <option value="$PROJECT_DIR$/dompdf/lib/php-font-lib/tests/FontLib" />
+        <option value="$PROJECT_DIR$/dompdf/lib/php-css-parser/tests" />
       </list>
     </option>
   </component>

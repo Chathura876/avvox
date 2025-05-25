@@ -13,7 +13,7 @@ try
 {	
 	if(isset($_POST['dealerid']) && isset($_GET['status'])){
 
-		$datastring = "<h2>Sales Report - Avvox CRM</h2>";
+		$datastring = "<h2>Sales Report - Coolco (Pvt) Ltd</h2>";
 
 		$fromtimestamp = strtotime($_POST['from']) - 1;
 		$totimestamp = strtotime($_POST['to']) + 86400;
