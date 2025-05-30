@@ -39,18 +39,27 @@ if ($_POST['command'] == 'search') {
     }
 }
 
+if ($_POST['command'] == 'getDetails') {
+    // Use prepared statements to prevent SQL injection
+    $stmt = $mysqli->prepare("SELECT * FROM product WHERE id = ?");
+    $stmt->bind_param("s", $_POST['id']);
+    $stmt->execute();
+    $result = $stmt->get_result();
 
-
-
-if ($_POST['command']=='getDetails') {
-    $sql="SELECT * FROM product WHERE id='".$_POST['id']."'";
-    $result = $mysqli->query($sql);
     if ($result && $row = $result->fetch_assoc()) {
-        echo json_encode($row);
+        $stmt2 = $mysqli->prepare("SELECT * FROM product_inventory WHERE dealerid = ? AND modelid = ?");
+        $stmt2->bind_param("ss", $_POST['shop'], $row['id']);
+        $stmt2->execute();
+        $result2 = $stmt2->get_result();
+        $inventoryData = $result2->fetch_assoc();
+
+        $data = array_merge($row, $inventoryData ?: []); // merge safely even if $inventoryData is null
+        echo json_encode($data);
     } else {
-        echo json_encode(['error' => 'Item not found or not have stock this shop']);
+        echo json_encode(['error' => 'Item not found or not in stock at this shop']);
     }
 
     $mysqli->close();
     exit;
 }
+

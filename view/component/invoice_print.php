@@ -58,8 +58,11 @@ if (isset($_GET['id'])) {
 
             .table th, .table td {
                 border: 1px solid #000 !important;
+                padding: 0 !important;
+                margin: 0 !important;
             }
 
+            .table th, .table td
             th {
                 border: 1px solid #000 !important;
             }
@@ -84,7 +87,7 @@ if (isset($_GET['id'])) {
 
         .table th, .table td {
             border: 1px solid #000 !important;
-            padding: 6px !important;
+            padding: 0 !important;
             vertical-align: middle;
         }
 
@@ -112,13 +115,17 @@ if (isset($_GET['id'])) {
             font-size: 14px !important;
             font-weight: bold;
         }
+
+        .conditions li {
+            font-size: 12px !important;
+        }
     </style>
 
 </head>
 
 <body onload="window.print();">
 
-<div class="container-fluid py-4">
+<div class="container-fluid ">
     <div class="invoice-header-bg text-center mb-4">
         <div class="row">
             <div class="col-3">
@@ -129,12 +136,11 @@ if (isset($_GET['id'])) {
                 <p class="mb-0">
                     <i class="bi bi-telephone-fill"></i> +94 112 072516 |
                     <i class="bi bi-phone-fill"></i> +94 777 99 10 50 / 0752 991050 |
-                    <i class="bi bi-envelope-fill"></i> eseven2@yahoo.com
+                    <i class="bi bi-envelope-fill"></i> info@coolco.lk
                 </p>
                 <p class="mb-0">
-                    <i class="bi bi-geo-alt-fill"></i> GS Motors Pannipitiya - No. 115/6, Horahena Road, Rukmale,
+                    <i class="bi bi-geo-alt-fill"></i> No. 115/6, Horahena Road, Rukmale,
                     Pannipitiya |<br>
-                    <i class="bi bi-globe2"></i> www.gsmotorsshop.com
                 </p>
             </div>
 
@@ -142,18 +148,17 @@ if (isset($_GET['id'])) {
     </div>
 
     <!-- Invoice Info -->
-    <div class="row mb-3">
-        <?php date_default_timezone_set('Asia/Colombo'); ?>
-        <div class="col-sm-6">
-            <p><strong>Invoice No:</strong> <?= $invoice_number; ?></p>
-            <p><strong>Date:</strong> <?= date('Y-m-d') ?></p>
-            <p><strong>Time:</strong> <?= date('H:i') ?></p>
-            <p><strong>Shop:</strong> <?= $row['shop'] ?></p>
-            <p><strong>Cashier:</strong> Sanduni</p>
+    <div class="row">
+        <div class="col-9">
+            <p><strong>Invoice No:</strong> <?= $invoice_number; ?> |<br>
+                <strong>Date:</strong> <?= date('Y-m-d') ?> |
+                <strong>Time:</strong> <?= date('H:i') ?> |
+                <strong>Shop:</strong> <?= $row['shop'] ?> |
+                <strong>Cashier:</strong> Cashier</p>
         </div>
-        <div class="col-sm-6 text-end">
-            <p><strong>Customer:</strong> <?= $row['customer_name']; ?></p>
-            <p><strong>Phone:</strong> <?= $row2['phone']; ?></p>
+        <div class="col-3 text-end">
+            <p><strong>Customer:</strong> <?= $row['customer_name']; ?> |
+                <strong>Phone:</strong> <?= $row2['phone']; ?></p>
         </div>
     </div>
 
@@ -178,29 +183,29 @@ if (isset($_GET['id'])) {
             if ($result && $result->num_rows > 0) {
                 $i = 1;
                 while ($row2 = $result->fetch_assoc()) {
-                    echo "
-                            <tr>
-                                <td>{$i}</td>
-                                <td>{$row2['item_name']}</td>
-                                <td>{$row2['price']}</td>
-                                <td>{$row2['qty']}</td>
-                                <td>{$row2['discount']}</td>
-                                <td>{$row2['sub_total']}</td>
-                            </tr>";
+                    echo '<tr>
+                <td>' . $i . '</td>
+                <td>' . htmlspecialchars($row2["item_name"]) . '</td>
+                <td class="text-center">' . number_format($row2["price"], 2) . '</td>
+                <td class="text-center">' . $row2["qty"] . '</td>
+                <td class="text-center">' . number_format($row2["discount"], 2) . '</td>
+                <td class="text-center">' . number_format($row2["sub_total"], 2) . '</td>
+              </tr>';
                     $i++;
                 }
             } else {
                 echo "<tr><td colspan='6' class='text-center'>No items found</td></tr>";
             }
             ?>
+
             </tbody>
         </table>
     </div>
 
     <!-- Totals -->
-    <div class="row justify-content-end mt-3">
-        <?php if (!empty($row['date1'])): ?>
-            <div class="col-5">
+    <div class="row justify-content-end ">
+        <?php if ($row['date1'] != '0000-00-00'): ?>
+            <div class="col-6">
                 <table class="table table-bordered">
                     <tr>
                         <th>1st Service</th>
@@ -217,9 +222,7 @@ if (isset($_GET['id'])) {
                 </table>
             </div>
         <?php endif; ?>
-
-
-        <div class="col-md-5">
+        <div class="col-6">
             <table class="table">
                 <tr>
                     <td><strong>Total:</strong></td>
@@ -246,7 +249,6 @@ if (isset($_GET['id'])) {
                         if (!empty($row['online']) && $row['online'] > 0) {
                             $payments[] = "Online: " . number_format($row['online'], 2);
                         }
-
                         echo !empty($payments) ? implode(' | ', $payments) : "-";
                         ?>
                     </td>
@@ -258,12 +260,62 @@ if (isset($_GET['id'])) {
             </table>
         </div>
     </div>
-
+    <?php if ($row['date1'] != '0000-00-00'): ?>
+        <div class="row">
+            <div class="col-12">
+                <h7 class="text-danger">Warranty & Free Services Details:</h7>
+                <ol class="conditions">
+                    <li>One year comprehensive warranty</li>
+                    <li>Five year limited warranty for compressor.</li>
+                    <li>The company will provide three free services during the comprehensive warranty period</li>
+                    <li>The company will contact the designated telephone number provided by the customer.</li>
+                    <li>Installation and technical support will be provided by the company.</li>
+                    <li>If quoted Items were supplied directly to customer (Wholesale), the product warranty will not be
+                        activated.
+                    </li>
+                    <li>The following items are provided free of charge along with the product warranty. One plug top,
+                        three meters of copper tubes, four
+                        installation hoses, two wall brackets, refrigerant gas and one remote with wifi connectivity for
+                        compatible models.
+                    </li>
+                </ol>
+                <p class="text-center"><b>The quoted prices are valid for a period of fourteen days from the date of the
+                        estimate</b></p>
+            </div>
+        </div>
+        <hr>
+    <?php endif; ?>
+    <div class="row">
+        <div class="col-12">
+            <h7 class="text-danger">Warranty & Free Services Details:</h7>
+            <ul class="conditions">
+                <li>For the warranty to be active it is mandatory to carry out the complimentary services by authorized
+                    personal during the warranty period.
+                </li>
+                <li>The warranty will automatically deemed void if any repairs or modifications has been carried out by
+                    unauthorized personnel.
+                </li>
+                <li>Damage caused by power fluctuations or power related issues is not covered by the warranty.</li>
+                <li>Damage caused by lightning, electrical surges, or thunderstorms is considered an act of nature and
+                    is not covered under warranty.
+                </li>
+                <li>The warranty does not cover any damage due to floods or product being exposed to water related
+                    issues.
+                </li>
+                <li>All prices are inclusive of VAT.</li>
+                <li>If product without warranty ,plug top and two wall brackets are not provided.</li>
+                <li>It is mandatory to regularly service the product every three months, carried out by authorized
+                    personal to actively maintain the limited warranty extended for the compressor.
+                </li>
+            </ul>
+        </div>
+    </div>
     <!-- Footer -->
     <div class="text-center invoice-footer" style="border-top: 3px solid black; border-bottom:3px solid black; ">
         <p class="mb-1">Thank you for your purchase!</p>
     </div>
 
 </div>
+
 </body>
 </html>

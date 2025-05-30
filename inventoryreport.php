@@ -1,4 +1,8 @@
-<?php require_once "common/header.php" ?>
+<?php
+require_once "common/header.php" ;
+require_once("common/database.php");
+
+?>
 <?php
 $permissions = array("admin", "salesrep","accountant","director","operator");
 
@@ -8,7 +12,14 @@ if (!(in_array($_SESSION['usertype'], $permissions))) {
 
 ?>
 <?php require_once "common/nav.php" ?>
+    <!-- DataTables CSS -->
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css">
 
+    <!-- jQuery (required by DataTables) -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+    <!-- DataTables JS -->
+    <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
 <style>
   #udaratable {
     /*font-family: "Trebuchet MS", Arial, Helvetica, sans-serif;*/
@@ -45,34 +56,41 @@ if (!(in_array($_SESSION['usertype'], $permissions))) {
 
 
 <div class="row">
-  <div class="col-6 offset-6 offset-md-9 col-md-3 d-print-none float-right btn-lg btn px-3">
-
-
-    <form action="process/generateorderspdf.php" method="POST">
-
+<!--    <div class="col-6 col-md-3 d-print-none px-3 mt-4">-->
+<!--        <select name="shop" id="shop" onchange="getShopInventory()">-->
+<!--            <option value="">Select Shop</option>-->
+<!--            --><?php
+//            $sql = "SELECT * FROM user where shopname !='' and shopname!='jjj'";
+//            $result = $mysqli->query($sql);
+//            while ($shop = $result->fetch_object()) {
+//                echo "<option value=\"{$shop->id}\">{$shop->shopname}</option>";
+//            }
+//            ?>
+<!--        </select>-->
+<!---->
+<!--    </div>-->
+  <div class="col-6 mt-4 d-print-none">
+      <form action="process/generateorderspdf.php" method="POST">
       <input type="hidden" id="printdatastring" name="printdatastring" value=""> &nbsp; &nbsp;
       <button type="button" class="btn btn-primary ml-3 float-right" onclick='window.print()'>Print</button>
       <button type="submit" class="btn btn-primary float-right">PDF</button>
     </form>
-
-
-
   </div>
 </div>
-
-
-<div class="row">
+    <div class="row">
   <div class="col-12" id="reporttable">
-
-
   </div>
 </div>
-
-<div class="row">
+ <div class="row">
   <div class="col-12" id="linkarea">
 
   </div>
 </div>
+    <script>
+        $(document).ready(function () {
+            $('#udaratable').DataTable();
+        });
+    </script>
 
 <script>
   $(document).ready(function() {
@@ -95,8 +113,9 @@ if (!(in_array($_SESSION['usertype'], $permissions))) {
         },
         dataType: 'html',
         success: function(data) {
-          $("#reporttable").html(data);
-          $("#printdatastring").val(data);
+            $("#reporttable").html(data);
+            $("#printdatastring").val(data);
+            $('#udaratable').DataTable(); // Initialize after loading
 
         },
         error: function() {
@@ -170,6 +189,30 @@ if (!(in_array($_SESSION['usertype'], $permissions))) {
 
   });
 </script>
+    <script>
+        function getShopInventory(){
+            alert();
+            let selected_shop =document.getElementById('shop').value;
+            $.ajax({
+                url:'process/getinventoryreport.php',
+                method:'POST',
+                data:{
+                    command:'selectShop',
+                    shop:selected_shop
+                },
+                success: function(data) {
+                    $("#reporttable").html(data);
+                    $("#printdatastring").val(data);
+                    $('#udaratable').DataTable();
 
+                },
+                error: function() {
+                    alert('An unknown error occoured, Please try again Later...!');
+
+                }
+
+            });
+        }
+    </script>
 
 <?php require_once "common/footer.php" ?>

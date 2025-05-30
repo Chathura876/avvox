@@ -30,6 +30,7 @@ if (isset($_POST['username']) && isset($_POST['password'])) {
       $_SESSION['fullname'] = $logged_in_user->fullname;
       $_SESSION['usertype'] = $logged_in_user->usertype;
       $_SESSION['mobileno'] = $logged_in_user->mobileno;
+      $_SESSION['level'] = $logged_in_user->level;
 
       $_SESSION['role_id'] = $logged_in_user->role_id;
       $_SESSION['permissions'] = [];

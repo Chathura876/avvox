@@ -787,7 +787,7 @@ INSERT INTO `user` (`id`, `username`, `password`, `fullname`, `shopname`, `nic`,
 --
 DROP TABLE IF EXISTS `product_inventory`;
 
-CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW `product_inventory`  AS SELECT `inventory`.`dealerid` AS `dealerid`, `inventory`.`modelid` AS `modelid`, `inventory`.`amount` AS `amount`, `product`.`model` AS `model`, `product`.`pricedefault` AS `pricedefault`, `product`.`id` AS `id` FROM (`inventory` join `product`) WHERE `product`.`id` = `inventory`.`modelid` ;
+CREATE ALGORITHM=UNDEFINED SQL SECURITY DEFINER VIEW `product_inventory`  AS SELECT `inventory`.`dealerid` AS `dealerid`, `inventory`.`modelid` AS `modelid`, `inventory`.`amount` AS `amount`, `product`.`model` AS `model`, `product`.`pricedefault` AS `pricedefault`, `product`.`id` AS `id` FROM (`inventory` join `product`) WHERE `product`.`id` = `inventory`.`modelid` ;
 
 --
 -- Indexes for dumped tables

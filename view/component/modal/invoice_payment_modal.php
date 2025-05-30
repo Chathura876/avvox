@@ -71,3 +71,10 @@
         </div>
     </div>
 </div>
+<script>
+    $(document).on('click', '.btn-close', function() {
+        $('#paymentModal').css('display', 'none');
+        $('body').removeClass('modal-open');
+        $('.modal-backdrop').remove();
+    });
+</script>

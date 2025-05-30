@@ -83,7 +83,7 @@ function highlightItem(items) {
 }
 
 function fetchItemDetails(id) {
-
+    let shop = document.getElementById('shop').value.trim();
     if (selectedProducts.some(p => p.id == id)) {
         alert('Product already added');
         $('#search').val(''); // Clear input
@@ -95,10 +95,12 @@ function fetchItemDetails(id) {
         method: 'POST',
         data: {
             command: 'getDetails',
-            id: id
+            id: id,
+            shop:shop
         },
         dataType: 'json',
         success: function (item) {
+            console.log(item);
             if (item && item.id) {
                 item.qty = 1;
                 item.discount = 0;
@@ -116,7 +118,7 @@ function fetchItemDetails(id) {
                         <input type="number" class="form-control" id="price_${item.id}" name="price[]" value="${item.pricedefault}" />
                     </td>
                     <td>
-                        <input type="number" id="qty_${item.id}" class="form-control" value="1" onchange="updateSubtotal(${item.id})">
+                        <input type="number" id="qty_${item.id}" data-inventory="${item.amount}" class="form-control" value="1" onchange="updateSubtotal(${item.id})" required>
                     </td>
                     <td>
                         <input type="number" id="discount_${item.id}" class="form-control" value="0" onchange="updateSubtotal(${item.id})">
@@ -147,27 +149,41 @@ function fetchItemDetails(id) {
 
 
 function updateSubtotal(id) {
-    let price = parseFloat($(`#price_${id}`).val()) || 0;
-    let qty = $(`#qty_${id}`).val();
-    let discount = $(`#discount_${id}`).val();
-    qty = qty === '' || parseFloat(qty) === 0 ? 1 : parseFloat(qty);
-    discount = discount === '' || parseFloat(discount) === 0 ? 0 : parseFloat(discount);
-    const subtotal = (price * qty) - discount;
+    let qty = parseFloat($(`#qty_${id}`).val()) || 0;
+    let inventory = parseFloat($(`#qty_${id}`).data('inventory')) || 0;
 
+    if (inventory >= qty) {
+        let price = parseFloat($(`#price_${id}`).val()) || 0;
+        let discount = parseFloat($(`#discount_${id}`).val()) || 0;
+        qty = qty === 0 ? 1 : qty;
+        const subtotal = (price * qty) - discount;
 
-    $(`#subtotal_${id}`).val(subtotal.toFixed(2));
+        $(`#subtotal_${id}`).val(subtotal.toFixed(2));
 
-    const product = selectedProducts.find(p => p.id == id);
-    if (product) {
-        netTotal -= product.subtotal;
+        const product = selectedProducts.find(p => p.id == id);
+        if (product) {
+            netTotal -= product.subtotal;
 
-        product.qty = qty;
-        product.discount = discount;
-        product.subtotal = subtotal;
-        $('#net_total').val(netTotal.toFixed(2));
+            product.qty = qty;
+            product.discount = discount;
+            product.subtotal = subtotal;
+
+            $('#net_total').val(netTotal.toFixed(2));
+        }
+
+        calculateNetTotal();
+    } else {
+        Swal.fire({
+            icon: 'warning',
+            title: 'Stock Limit Exceeded',
+            text: `Only ${inventory} items in stock for this product.`,
+            confirmButtonColor: '#3085d6',
+            confirmButtonText: 'OK'
+        });
+        $(`#qty_${id}`).val('');
     }
-    calculateNetTotal();
 }
+
 
 function calculateNetTotal() {
     let total = 0;
@@ -262,10 +278,10 @@ function paymentSave() {
         alert('Please select customer');
         return;
     }
-    let shop=document.getElementById('shop').value;
-    let date1=document.getElementById('date1').value;
-    let date2=document.getElementById('date2').value;
-    let date3=document.getElementById('date3').value;
+    let shop = document.getElementById('shop').value;
+    let date1 = document.getElementById('date1').value;
+    let date2 = document.getElementById('date2').value;
+    let date3 = document.getElementById('date3').value;
 
     let cash = parseFloat(document.getElementById('cash_pay').value) || 0;
     let card = parseFloat(document.getElementById('card_pay').value) || 0;
@@ -283,17 +299,17 @@ function paymentSave() {
         alert('Balance field not found!');
     }
 
-    console.log({
-        customer: customerName,
-        netTotal: netTotal,
-        cash: cash,
-        card: card,
-        credit: credit,
-        cheque: cheque,
-        totalPaid: totalPaid,
-        balance: balance,
-        item: selectedProducts
-    });
+    // console.log({
+    //     customer: customerName,
+    //     netTotal: netTotal,
+    //     cash: cash,
+    //     card: card,
+    //     credit: credit,
+    //     cheque: cheque,
+    //     totalPaid: totalPaid,
+    //     balance: balance,
+    //     item: selectedProducts
+    // });
     let data = {
         command: 'save_payment',
         customer: customerName,
@@ -306,10 +322,10 @@ function paymentSave() {
         balance: balance,
         item: selectedProducts,
         inv_no: inv_no,
-        shop:shop,
-        date1:date1,
-        date2:date2,
-        date3:date3
+        shop: shop,
+        date1: date1,
+        date2: date2,
+        date3: date3
     };
     $.ajax({
         url: '../Controller/SalesInvoiceController.php',
@@ -326,10 +342,10 @@ function paymentSave() {
             totalPaid: totalPaid,
             balance: balance,
             item: selectedProducts,
-            shop:shop,
-            date1:date1,
-            date2:date2,
-            date3:date3
+            shop: shop,
+            date1: date1,
+            date2: date2,
+            date3: date3
 
         }),
         contentType: 'application/json',
